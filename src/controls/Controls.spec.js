@@ -1,5 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { toBeDisabled } from '@testing-library/jest-dom';
+expect.extend({ toBeDisabled })
 
 import Controls from './Controls';
 
@@ -29,16 +31,14 @@ test('Open gate button opens the gate and changes the button to close', () => {
     findByText(/close/i);
 });
 
-test('Lock gate does not work if the gate is open', () => {
-    const { getByText, findByText } = render(<Controls locked={false} closed={false} />);
+test('Lock gate is disabled if the gate is open', () => {
+    const { getByText } = render(<Controls locked={false} closed={false} />);
     const button = getByText(/lock gate/i);
-    fireEvent.click(button);
-    findByText(/lock gate/i);
+    expect(button).toBeDisabled();
 });
 
 test('Open gate does not work if the gate is locked', () => {
-    const { getByText, findByText } = render(<Controls locked closed />);
+    const { getByText } = render(<Controls locked closed />);
     const button = getByText(/open/i);
-    fireEvent.click(button);
-    findByText(/open/i);
+    expect(button).toBeDisabled();
 });
