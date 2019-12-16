@@ -1,34 +1,48 @@
 import React from 'react';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { toHaveClass } from '@testing-library/jest-dom';
-expect.extend({ toHaveClass })
+expect.extend({ toHaveClass });
 
-import Display from './Display';
+import { initialState, reducer } from '../store/reducers';
 
-test('Displays if the gate is locked or unlocked', () => {
-    const { getByText, rerender } = render(<Display locked />);
-    getByText('Locked');
-    rerender(<Display locked={false} />);
-    getByText(/unlocked/i);
+import Dashboard from '../dashboard/Dashboard';
+
+function renderWithRedux(
+    ui,
+    { initialState, store = createStore(reducer, initialState) } = {}
+) {
+    return {
+        ...render(<Provider store={store}>{ui}</Provider>),
+        store
+    }
+};
+
+test('When gate is locked, displays "locked" and background is red', () => {
+    const { getByText } = renderWithRedux(<Dashboard />, {
+        initialState: { locked: true }
+    });
+    expect(getByText('Locked')).toHaveClass('red-led');  
 });
 
-test('Displays if the gate is closed or open', () => {
-    const { getByText, rerender } = render(<Display closed />);
-    getByText(/closed/i);
-    rerender(<Display closed={false} />);
-    getByText(/open/i);
-});
-
-test('If locked or closed, the display is red', () => {
-    const { getByText, rerender } = render(<Display locked />);
-    expect(getByText('Locked')).toHaveClass('red-led');
-    rerender(<Display closed />);
-    expect(getByText(/closed/i)).toHaveClass('red-led');
-});
-
-test('If unlocked or open, the display is green', () => {
-    const { getByText, rerender } = render(<Display locked={false} />);
+test('When gate is unlocked, displays "unlocked" and background is green', () => {
+    const { getByText } = renderWithRedux(<Dashboard />, {
+        initialState: { locked: false }
+    });
     expect(getByText(/unlocked/i)).toHaveClass('green-led');
-    rerender(<Display closed={false} />);
+});
+
+test('When gate is closed, displays "closed" and background is red', () => {
+    const { getByText } = renderWithRedux(<Dashboard />, {
+        initialState: { closed: true }
+    });
+    expect(getByText(/closed/i)).toHaveClass('red-led');   
+});
+
+test('When gate is open, displays "open" and background is green', () => {
+    const { getByText } = renderWithRedux(<Dashboard />, {
+        initialState: { closed: false }
+    });
     expect(getByText(/open/i)).toHaveClass('green-led');
 });
