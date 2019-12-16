@@ -4,22 +4,22 @@ import { render, fireEvent } from '@testing-library/react';
 import Controls from './Controls';
 
 test('Displays the correct actions based on whether the gate is locked or closed', () => {
-    const { findByText, rerender } = render(<Controls locked closed />);
-    findByText(/unlock/i);
-    findByText(/open/i);
+    const { getByText, rerender } = render(<Controls locked closed />);
+    getByText(/unlock/i);
+    getByText(/open/i);
     rerender(<Controls locked={false} closed />);
-    findByText(/lock/i);
-    findByText(/open/i);
+    getByText(/lock gate/i);
+    getByText(/open/i);
     rerender(<Controls locked={false} closed={false} />);
-    findByText(/lock/i);
-    findByText(/close/i);
+    getByText(/lock gate/i);
+    getByText(/close/i);
 });
 
 test('Unlock gate button unlocks the gate and changes the button to lock', () => {
     const { getByText, findByText } = render(<Controls locked />);
     const button = getByText(/unlock/i);
     fireEvent.click(button);
-    findByText(/lock/i);
+    findByText(/lock gate/i);
 });
 
 test('Open gate button opens the gate and changes the button to close', () => {
@@ -27,4 +27,18 @@ test('Open gate button opens the gate and changes the button to close', () => {
     const button = getByText(/open/i);
     fireEvent.click(button);
     findByText(/close/i);
+});
+
+test('Lock gate does not work if the gate is open', () => {
+    const { getByText, findByText } = render(<Controls locked={false} closed={false} />);
+    const button = getByText(/lock gate/i);
+    fireEvent.click(button);
+    findByText(/lock gate/i);
+});
+
+test('Open gate does not work if the gate is locked', () => {
+    const { getByText, findByText } = render(<Controls locked closed />);
+    const button = getByText(/open/i);
+    fireEvent.click(button);
+    findByText(/open/i);
 });
