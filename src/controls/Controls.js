@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { toggleLocked, toggleClosed } from '../store/actions';
 
 const Controls = props => {
   const { locked, closed, toggleLocked, toggleClosed } = props;
@@ -23,4 +26,11 @@ const Controls = props => {
   );
 };
 
-export default Controls;
+const mapStateToProps = state => {
+  return {
+    locked: state.locked,
+    closed: state.closed
+  };
+};
+
+export default connect(mapStateToProps, { toggleLocked, toggleClosed })(Controls);

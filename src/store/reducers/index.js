@@ -17,5 +17,7 @@ export const reducer = (state = initialState, action) => {
                 ...state,
                 closed: !state.closed
             };
+        default:
+            return state;
     };
 };
