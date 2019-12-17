@@ -1,23 +1,10 @@
 import React from 'react';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { toBeDisabled } from '@testing-library/jest-dom';
 expect.extend({ toBeDisabled })
-
-import { initialState, reducer } from '../store/reducers';
+import { renderWithRedux } from '../utils/renderWithRedux';
 
 import Dashboard from '../dashboard/Dashboard';
-
-function renderWithRedux(
-    ui,
-    { initialState, store = createStore(reducer, initialState) } = {}
-) {
-    return {
-        ...render(<Provider store={store}>{ui}</Provider>),
-        store
-    }
-};
 
 test('Displays "unlock gate" and "open gate" when locked and closed', () => {
     const { getByText } = renderWithRedux(<Dashboard />, {

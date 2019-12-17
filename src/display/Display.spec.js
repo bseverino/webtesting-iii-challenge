@@ -1,23 +1,9 @@
 import React from 'react';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
 import { toHaveClass } from '@testing-library/jest-dom';
 expect.extend({ toHaveClass });
-
-import { initialState, reducer } from '../store/reducers';
+import { renderWithRedux } from '../utils/renderWithRedux';
 
 import Dashboard from '../dashboard/Dashboard';
-
-function renderWithRedux(
-    ui,
-    { initialState, store = createStore(reducer, initialState) } = {}
-) {
-    return {
-        ...render(<Provider store={store}>{ui}</Provider>),
-        store
-    }
-};
 
 test('When gate is locked, displays "locked" and background is red', () => {
     const { getByText } = renderWithRedux(<Dashboard />, {
