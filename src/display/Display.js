@@ -1,20 +1,23 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const Display = ({ closed, locked }) => {
   const closedClass = `led ${closed ? 'red-led' : 'green-led'}`;
   const lockedClass = `led ${locked ? 'red-led' : 'green-led'}`;
 
   return (
-    <div className="display panel">
-      <div className={lockedClass}>{locked ? 'Locked' : 'Unlocked'}</div>
-      <div className={closedClass}>{closed ? 'Closed' : 'Open'}</div>
+    <div className="display panel"  data-testid='display'>
+      <div className={lockedClass} data-test-id='isGateLocked'>{locked ? 'Locked' : 'Unlocked'}</div>
+      <div className={closedClass} data-test-id='isGateClosed'>{closed ? 'Closed' : 'Open'}</div>
     </div>
   );
 };
 
-Display.defaultProps = {
-  closed: false,
-  locked: false,
+const mapStateToProps = state => {
+  return {
+    locked: state.locked,
+    closed: state.closed
+  };
 };
 
-export default Display;
+export default connect(mapStateToProps, {})(Display);
